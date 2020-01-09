@@ -36,7 +36,7 @@ async function asanaOperations(
       core.info('Added the pull request link to the Asana task.');
     }
   } catch (ex) {
-    core.error(ex.value);
+    console.error(ex.value);
   }
 }
 
@@ -53,6 +53,9 @@ try {
   let taskComment = null,
     parseAsanaURL = null;
 
+  if (!ASANA_PAT) {
+    throw { message: 'Asana PAT Invalid or not found.' };
+  }
   if (TASK_COMMENT) {
     taskComment = `${TASK_COMMENT} ${PULL_REQUEST.html_url}`;
   }
@@ -62,7 +65,9 @@ try {
     if (projectId && taskId) {
       asanaOperations(ASANA_PAT, projectId, taskId, SECTION_NAME, taskComment);
     } else {
-      core.info('Invalid Asana task URL after the trigger phrase' + TRIGGER_PHRASE);
+      core.info(
+        'Invalid Asana task URL after the trigger phrase' + TRIGGER_PHRASE
+      );
     }
   }
 } catch (error) {
